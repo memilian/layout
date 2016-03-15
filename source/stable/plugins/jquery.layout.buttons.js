@@ -243,7 +243,7 @@ $.layout.buttons = {
 
 		// init state array to hold pin-buttons
 		for (var i=0; i<4; i++) {
-			var pane = $.layout.buttons.config.borderPanes[i];
+			var pane = $.layout.buttons.config.borderPanes.split(',')[i];
 			inst.state[pane].pins = [];
 		}
 
