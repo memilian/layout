@@ -1,3 +1,6 @@
+1.4.4
+* Merged in latest code from http://layout.jquery-dev.com/downloads.cfm
+
 1.2.0
 * ADDED maskIframesOnResize option: true=ALL -OR- a selector string
 * ADDED options to set different animations on open and close

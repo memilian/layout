@@ -15,9 +15,6 @@
  * Docs: [ to come ]
  * Tips: [ to come ]
  */
-
-// NOTE: For best readability, view with a fixed-width font and tabs equal to 4-chars
-
 ;(function ($) {
 
 if (!$.layout) return;
@@ -30,8 +27,6 @@ $.layout.plugins.buttons = true;
 $.layout.defaults.autoBindCustomButtons = false;
 // Set stateManagement as a layout-option, NOT a pane-option
 $.layout.optionsMap.layout.push("autoBindCustomButtons");
-
-var lang = $.layout.language;
 
 /*
  *	Button methods
@@ -80,16 +75,9 @@ $.layout.buttons = {
 ,	get: function (inst, selector, pane, action) {
 		var $E	= $(selector)
 		,	o	= inst.options
-		,	err	= o.showErrorMessages
+		//,	err	= o.showErrorMessages
 		;
-		if (!$E.length) { // element not found
-			if (err) alert(lang.errButton + lang.selector +": "+ selector);
-		}
-		else if ($.layout.buttons.config.borderPanes.indexOf(pane) === -1) { // invalid 'pane' sepecified
-			if (err) alert(lang.errButton + lang.pane +": "+ pane);
-			$E = $("");  // NO BUTTON
-		}
-		else { // VALID
+		if ($E.length && $.layout.buttons.config.borderPanes.indexOf(pane) >= 0) {
 			var btn = o[pane].buttonClass +"-"+ action;
 			$E	.addClass( btn +" "+ btn +"-"+ pane )
 				.data("layoutName", o.name); // add layout identifier - even if blank!
@@ -143,7 +131,7 @@ $.layout.buttons = {
 	*/
 ,	addOpen: function (inst, selector, pane, slide) {
 		$.layout.buttons.get(inst, selector, pane, "open")
-			.attr("title", lang.Open)
+			.attr("title", inst.options[pane].tips.Open)
 			.click(function (evt) {
 				inst.open(pane, !!slide);
 				evt.stopPropagation();
@@ -159,7 +147,7 @@ $.layout.buttons = {
 	*/
 ,	addClose: function (inst, selector, pane) {
 		$.layout.buttons.get(inst, selector, pane, "close")
-			.attr("title", lang.Close)
+			.attr("title", inst.options[pane].tips.Close)
 			.click(function (evt) {
 				inst.close(pane);
 				evt.stopPropagation();
@@ -211,7 +199,9 @@ $.layout.buttons = {
 		var updown = $Pin.attr("pin");
 		if (updown && doPin === (updown=="down")) return; // already in correct state
 		var
-			pin		= inst.options[pane].buttonClass +"-pin"
+			po		= inst.options[pane]
+		,	lang	= po.tips
+		,	pin		= po.buttonClass +"-pin"
 		,	side	= pin +"-"+ pane
 		,	UP		= pin +"-up "+	side +"-up"
 		,	DN		= pin +"-down "+side +"-down"
@@ -271,6 +261,5 @@ $.layout.buttons = {
 // add initialization method to Layout's onLoad array of functions
 $.layout.onLoad.push(  $.layout.buttons._load );
 //$.layout.onUnload.push( $.layout.buttons._unload );
-
 
 })( jQuery );

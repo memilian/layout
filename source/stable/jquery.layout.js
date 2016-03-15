@@ -1,8 +1,8 @@
 /**
  * @preserve
- * jquery.layout 1.4.3
- * $Date: 2014-08-30 08:00:00 (Sat, 30 Aug 2014) $
- * $Rev: 1.0403 $
+ * jquery.layout 1.4.4
+ * $Date: 2014-11-29 08:00:00 (Sat, 29 November 2014) $
+ * $Rev: 1.0404 $
  *
  * Copyright (c) 2014 Kevin Dalman (http://jquery-dev.com)
  * Based on work by Fabrizio Balliano (http://www.fabrizioballiano.net)
@@ -25,8 +25,7 @@
  * {number=}	optional parameter
  * {*}			ALL types
  */
-/*	TODO for jQ 2.0 
- *	change .andSelf() to .addBack()
+/*	TODO for jQ 2.x 
  *	check $.fn.disableSelection - this is in jQuery UI 1.9.x
  */
 
@@ -65,8 +64,8 @@ var	min		= Math.min
  */
 $.layout = {
 
-	version:	"1.4.3"
-,	revision:	1.0403 // eg: 1.4.1 final = 1.0401 - major(n+).minor(nn)+patch(nn+)
+	version:	"1.4.4"
+,	revision:	1.0404 // eg: ver 1.4.4 = rev 1.0404 - major(n+).minor(nn)+patch(nn+)
 
 	// $.layout.browser REPLACES $.browser
 ,	browser:	{} // set below
@@ -5130,3 +5129,5 @@ $.fn.layout = function (opts) {
 
 
 })( jQuery );
+
+
