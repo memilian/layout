@@ -1,8 +1,8 @@
 /**
  * @preserve
- * jquery.layout 1.4.3
- * $Date: 2014-08-30 08:00:00 (Sat, 30 Aug 2014) $
- * $Rev: 1.0403 $
+ * jquery.layout 1.4.4
+ * $Date: 2014-11-29 08:00:00 (Sat, 29 November 2014) $
+ * $Rev: 1.0404 $
  *
  * Copyright (c) 2014 Kevin Dalman (http://jquery-dev.com)
  * Based on work by Fabrizio Balliano (http://www.fabrizioballiano.net)
@@ -25,8 +25,7 @@
  * {number=}	optional parameter
  * {*}			ALL types
  */
-/*	TODO for jQ 2.0 
- *	change .andSelf() to .addBack()
+/*	TODO for jQ 2.x 
  *	check $.fn.disableSelection - this is in jQuery UI 1.9.x
  */
 
@@ -65,8 +64,8 @@ var	min		= Math.min
  */
 $.layout = {
 
-	version:	"1.4.3"
-,	revision:	1.0403 // eg: 1.4.1 final = 1.0401 - major(n+).minor(nn)+patch(nn+)
+	version:	"1.4.4"
+,	revision:	1.0404 // eg: ver 1.4.4 = rev 1.0404 - major(n+).minor(nn)+patch(nn+)
 
 	// $.layout.browser REPLACES $.browser
 ,	browser:	{} // set below
@@ -4644,8 +4643,9 @@ $.fn.layout = function (opts) {
 		if (!isInitialized()) return;
 		var	pane = evtPane.call(this, evt_or_pane)
 		,	$R	= $Rs[pane]
+		,	isSlidable = $R && ($R.data('draggable') || $R.data('ui-draggable')) // jquery-ui 1.10.2+, uses 'ui-draggable'
 		;
-		if (!$R || !$R.data('draggable')) return;
+		if (!isSlidable) return;
 		options[pane].slidable = true; 
 		if (state[pane].isClosed)
 			bindStartSlidingEvents(pane, true);
@@ -4679,8 +4679,9 @@ $.fn.layout = function (opts) {
 		var	pane = evtPane.call(this, evt_or_pane)
 		,	$R	= $Rs[pane]
 		,	o	= options[pane]
+		,	isResizable = $R && ($R.data('draggable') || $R.data('ui-draggable')) // jquery-ui 1.10.2+, uses 'ui-draggable'
 		;
-		if (!$R || !$R.data('draggable')) return;
+		if (!isResizable) return;
 		o.resizable = true; 
 		$R.draggable("enable");
 		if (!state[pane].isClosed)
@@ -4694,8 +4695,9 @@ $.fn.layout = function (opts) {
 		if (!isInitialized()) return;
 		var	pane = evtPane.call(this, evt_or_pane)
 		,	$R	= $Rs[pane]
+		,	isResizable = $R && ($R.data('draggable') || $R.data('ui-draggable')) // jquery-ui 1.10.2+, uses 'ui-draggable'
 		;
-		if (!$R || !$R.data('draggable')) return;
+		if (!isResizable) return;
 		options[pane].resizable = false; 
 		$R	.draggable("disable")
 			.css("cursor", "default")
@@ -5130,8 +5132,6 @@ $.fn.layout = function (opts) {
 
 
 })( jQuery );
-
-
 
 
 /**
@@ -5607,8 +5607,6 @@ $.layout.onUnload.push( $.layout.state._unload );
 
 })( jQuery );
 
-
-
 /**
  * @preserve jquery.layout.buttons 1.0
  * $Date: 2011-07-16 08:00:00 (Sat, 16 July 2011) $
@@ -5638,8 +5636,6 @@ $.layout.plugins.buttons = true;
 $.layout.defaults.autoBindCustomButtons = false;
 // Set stateManagement as a layout-option, NOT a pane-option
 $.layout.optionsMap.layout.push("autoBindCustomButtons");
-
-var lang = $.layout.language;
 
 /*
  *	Button methods
@@ -5688,16 +5684,9 @@ $.layout.buttons = {
 ,	get: function (inst, selector, pane, action) {
 		var $E	= $(selector)
 		,	o	= inst.options
-		,	err	= o.showErrorMessages
+		//,	err	= o.showErrorMessages
 		;
-		if (!$E.length) { // element not found
-			if (err) alert(lang.errButton + lang.selector +": "+ selector);
-		}
-		else if ($.layout.buttons.config.borderPanes.indexOf(pane) === -1) { // invalid 'pane' sepecified
-			if (err) alert(lang.errButton + lang.pane +": "+ pane);
-			$E = $("");  // NO BUTTON
-		}
-		else { // VALID
+		if ($E.length && $.layout.buttons.config.borderPanes.indexOf(pane) >= 0) {
 			var btn = o[pane].buttonClass +"-"+ action;
 			$E	.addClass( btn +" "+ btn +"-"+ pane )
 				.data("layoutName", o.name); // add layout identifier - even if blank!
@@ -5751,7 +5740,7 @@ $.layout.buttons = {
 	*/
 ,	addOpen: function (inst, selector, pane, slide) {
 		$.layout.buttons.get(inst, selector, pane, "open")
-			.attr("title", lang.Open)
+			.attr("title", inst.options[pane].tips.Open)
 			.click(function (evt) {
 				inst.open(pane, !!slide);
 				evt.stopPropagation();
@@ -5767,7 +5756,7 @@ $.layout.buttons = {
 	*/
 ,	addClose: function (inst, selector, pane) {
 		$.layout.buttons.get(inst, selector, pane, "close")
-			.attr("title", lang.Close)
+			.attr("title", inst.options[pane].tips.Close)
 			.click(function (evt) {
 				inst.close(pane);
 				evt.stopPropagation();
@@ -5819,7 +5808,9 @@ $.layout.buttons = {
 		var updown = $Pin.attr("pin");
 		if (updown && doPin === (updown=="down")) return; // already in correct state
 		var
-			pin		= inst.options[pane].buttonClass +"-pin"
+			po		= inst.options[pane]
+		,	lang	= po.tips
+		,	pin		= po.buttonClass +"-pin"
 		,	side	= pin +"-"+ pane
 		,	UP		= pin +"-up "+	side +"-up"
 		,	DN		= pin +"-down "+side +"-down"
@@ -5861,7 +5852,7 @@ $.layout.buttons = {
 
 		// init state array to hold pin-buttons
 		for (var i=0; i<4; i++) {
-			var pane = $.layout.buttons.config.borderPanes[i];
+			var pane = $.layout.buttons.config.borderPanes.split(',')[i];
 			inst.state[pane].pins = [];
 		}
 
@@ -5881,10 +5872,6 @@ $.layout.onLoad.push(  $.layout.buttons._load );
 //$.layout.onUnload.push( $.layout.buttons._unload );
 
 })( jQuery );
-
-
-
-
 /**
  * jquery.layout.browserZoom 1.0
  * $Date: 2011-12-29 08:00:00 (Thu, 29 Dec 2011) $
@@ -5976,9 +5963,6 @@ $.layout.onReady.push( $.layout.browserZoom._init );
 
 
 })( jQuery );
-
-
-
 
 /**
  *	UI Layout Plugin: Slide-Offscreen Animation
