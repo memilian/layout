@@ -54,6 +54,9 @@ $.layout.touch = {
 		,	p		= $R.data('layoutEdge')
 		,	o		= inst.options[p]
 		,	s		= inst.state[p]
+		,	base	= o.resizerClass
+		,	resizerClass		= base+"-dragging"				// resizer-drag
+		,	resizerPaneClass	= base+"-"+p+"-dragging"		// resizer-north-drag
 		;
 		s.touchDragStart = 0;
 		if (s.isClosed || !o.resizable) return; 
@@ -62,6 +65,8 @@ $.layout.touch = {
 		if (!e.touches || e.touches.length != 1) return; 
 		// SET RESIZER LIMITS - used in drag() 
 		inst.setSizeLimits(p); // update pane/resizer state 
+		inst.showMasks(p, { resizing: true });
+		$R.addClass(resizerClass +" "+ resizerPaneClass); 
 		r = s.resizerPosition; 
 		s.isResizing = true; 
 	}
@@ -97,6 +102,9 @@ $.layout.touch = {
 		,   sC  = inst.state.container
 		,	pos	= s.touchDragStart 
 		,	vert = p.match(/(east|west)/)
+		,	base	= o.resizerClass
+		,	resizerClass		= base+"-dragging"				// resizer-drag
+		,	resizerPaneClass	= base+"-"+p+"-dragging"		// resizer-north-drag
 		;
 		if (s.isClosed || !o.resizable) return; 
 		if (!pos) return;
@@ -104,6 +112,7 @@ $.layout.touch = {
 		// Touch: reset the resizer's top/left style that we set above during drag, 
 		// else it remains stuck in place if the pane is later closed 
 		$R.css((vert ? 'left' : 'top'), ''); 
+		$R.removeClass(resizerClass +" "+ resizerPaneClass); // remove drag classes from Resizer
 		// Touch: following code inspired by resizePanes() subroutine 
 		switch (p) { 
 			case "north": resizerPos = pos; break; 
@@ -114,6 +123,7 @@ $.layout.touch = {
 		// remove container margin from resizer position to get the pane size 
 		var newSize = resizerPos - sC.inset[c.side]; 
 		inst._sizePane(p, newSize); 
+		inst.hideMasks(p);
 		s.isResizing = false; 
 		s.touchDragStart = 0;
 	}
