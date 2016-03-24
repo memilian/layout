@@ -77,8 +77,9 @@ $.layout.touch = {
 		;
 		if (s.isClosed || !o.resizable) return; 
 		if (!t || t.length != 1) return; 
-		e.preventDefault();  // Touch: prevent scrolling 
-		pos = vert ? t[0].pageX : t[0].pageY; 
+		e.preventDefault();  // Touch: prevent scrolling
+		var offset = $R.offsetParent().offset();
+		pos = vert ? t[0].pageX - offset.left : t[0].pageY - offset.top; 
 		pos = Math.min( Math.max(pos, r.min), r.max );
 		// Touch: for simplicity, move the actual resizer div, not a clone 
 		$R.css((vert ? 'left' : 'top'), pos); 
