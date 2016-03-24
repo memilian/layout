@@ -56,8 +56,8 @@ $.layout.touch = {
 		,	o		= inst.options[p]
 		,	s		= inst.state[p]
 		,	base	= o.resizerClass
-		,	resizerClass		= base+"-dragging"				// resizer-drag
-		,	resizerPaneClass	= base+"-"+p+"-dragging"		// resizer-north-drag
+		,	helperClass		= base+"-dragging"				// resizer-drag
+		,	helperPaneClass	= base+"-"+p+"-dragging"		// resizer-north-drag
 		;
 		s.touchDragStart = 0;
 		if (s.isClosed || !o.resizable) return; 
@@ -67,7 +67,7 @@ $.layout.touch = {
 		// SET RESIZER LIMITS - used in drag() 
 		inst.setSizeLimits(p); // update pane/resizer state 
 		inst.showMasks(p, { resizing: true });
-		$R.addClass(resizerClass +" "+ resizerPaneClass); 
+		$R.addClass(helperClass +" "+ helperPaneClass); 
 		r = s.resizerPosition; 
 		s.isResizing = true; 
 	}
@@ -104,13 +104,13 @@ $.layout.touch = {
 		,	pos	= s.touchDragStart 
 		,	vert = p.match(/(east|west)/)
 		,	base	= o.resizerClass
-		,	resizerClass		= base+"-dragging"				// resizer-drag
-		,	resizerPaneClass	= base+"-"+p+"-dragging"		// resizer-north-drag
+		,	helperClass		= base+"-dragging"				// resizer-drag
+		,	helperPaneClass	= base+"-"+p+"-dragging"		// resizer-north-drag
 		;
 		if (s.isClosed || !o.resizable) return; 
-		$R.removeClass(resizerClass +" "+ resizerPaneClass); // remove drag classes from Resizer
-		if (!pos) return;
 		var c   = _c[p], resizerPos; 
+		$R.removeClass(helperClass +" "+ helperPaneClass); // remove drag classes from Resizer
+		if (!pos) return;
 		// Touch: reset the resizer's top/left style that we set above during drag, 
 		// else it remains stuck in place if the pane is later closed 
 		$R.css((vert ? 'left' : 'top'), ''); 
@@ -123,7 +123,7 @@ $.layout.touch = {
 		}
 		// remove container margin from resizer position to get the pane size 
 		var newSize = resizerPos - sC.inset[c.side]; 
-		inst._sizePane(p, newSize); 
+		inst.sizePane(p, newSize); 
 		inst.hideMasks(p);
 		s.isResizing = false; 
 		s.touchDragStart = 0;
