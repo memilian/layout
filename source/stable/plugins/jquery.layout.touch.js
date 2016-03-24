@@ -1,9 +1,10 @@
 /**
- * @preserve jquery.layout.state 1.2
+ * @preserve jquery.layout.touch 1.0
  * $Date: 2011-07-16 08:00:00 (Sat, 16 July 2011) $
  *
  * Copyright (c) 2010 
  *   Kevin Dalman (http://allpro.net)
+ * (c) 2016 Michael Tinglof
  *
  * Dual licensed under the GPL (http://www.gnu.org/licenses/gpl.html)
  * and MIT (http://www.opensource.org/licenses/mit-license.php) licenses.
@@ -35,8 +36,8 @@ $.layout.touch = {
 	}
 
 	/**
-	*
-	* @see  _create()
+	* Enable touch events for each resizer in this layout.
+	* @see  init()
 	*/
 ,	init: function (inst) {
 		// if browser is not Touch enabled, then exit
