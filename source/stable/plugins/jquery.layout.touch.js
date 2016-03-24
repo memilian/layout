@@ -46,6 +46,7 @@ $.layout.touch = {
 				.bind('touchstart',	function (evt) { return $.layout.touch.start(evt, inst, this); }) 
 				.bind('touchmove',	function (evt) { return $.layout.touch.move(evt, inst, this); }) 
 				.bind('touchend',	function (evt) { return $.layout.touch.end(evt, inst, this); }) 
+				.bind('touchcancel',function (evt) { return $.layout.touch.end(evt, inst, this); }) 
 		});
 	}
 
@@ -107,12 +108,12 @@ $.layout.touch = {
 		,	resizerPaneClass	= base+"-"+p+"-dragging"		// resizer-north-drag
 		;
 		if (s.isClosed || !o.resizable) return; 
+		$R.removeClass(resizerClass +" "+ resizerPaneClass); // remove drag classes from Resizer
 		if (!pos) return;
 		var c   = _c[p], resizerPos; 
 		// Touch: reset the resizer's top/left style that we set above during drag, 
 		// else it remains stuck in place if the pane is later closed 
 		$R.css((vert ? 'left' : 'top'), ''); 
-		$R.removeClass(resizerClass +" "+ resizerPaneClass); // remove drag classes from Resizer
 		// Touch: following code inspired by resizePanes() subroutine 
 		switch (p) { 
 			case "north": resizerPos = pos; break; 
