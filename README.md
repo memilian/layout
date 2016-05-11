@@ -1,4 +1,7 @@
 Fork created to merge in v1.4.4 changes from http://layout.jquery-dev.com/downloads.cfm
+
+Also adds support for touch devices via jquery.layout.touch.js plugin.
+
 ---------------------------------------------------------------------------------------
 
 jQuery UI Layout
